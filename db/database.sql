@@ -35,7 +35,7 @@ CREATE TABLE usuarios (
     name VARCHAR(45) DEFAULT NULL,
     lastName VARCHAR(45) DEFAULT NULL,
     email VARCHAR(45) DEFAULT NULL,
-    password VARCHAR(12) DEFAULT NULL
+    password VARCHAR(12) DEFAULT NULL,
     PRIMARY KEY(id)
 );
 
