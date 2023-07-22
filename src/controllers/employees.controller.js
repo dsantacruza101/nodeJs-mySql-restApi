@@ -1,11 +1,12 @@
 import { pool } from '../db.js'
+import { getAllEmployees, getEmployeesById, createEmployee, deleteEmployeeById, updateEmployee } from '../models/employees.models.js'
 
 export const getEmployees = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM employee')
-        res.json(rows)
+        const result = await getAllEmployees()
+        res.json(result)
     } catch (error) {
-        return res.status.json({
+        return res.status(500).json({
             message: 'something goes wrong'
         })
     }
@@ -13,14 +14,15 @@ export const getEmployees = async (req, res) => {
 
 export const getEmployeebyId = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM employee WHERE id = ?', [req.params.id])
+        const result = await getEmployeesById(req.params.id)
 
-        if (rows.length <= 0) return res.status(404).json({
+        if ( !result ) return res.status(404).json({
             message: 'employee not found'
-        })
-        res.send(rows[0])
+        });
+
+        res.send(result)
     } catch (error) {
-        return res.status.json({
+        return res.status(500).json({
             message: 'something goes wrong'
         });
     }
@@ -29,14 +31,15 @@ export const getEmployeebyId = async (req, res) => {
 export const postEmployee = async (req, res) => {
     const { name, salary } = req.body
     try {
-        const [rows] = await pool.query('INSERT INTO employee (name, salary) VALUES (?, ?)', [name, salary])
+        
+        const result = await createEmployee( name, salary )
         res.send({
-            id: rows.insertId,
+            id: result.insertId,
             name,
             salary
         })
     } catch (error) {
-        return res.status.json({
+        return res.status(500).json({
             message: 'something goes wrong'
         });
     }
@@ -45,15 +48,20 @@ export const postEmployee = async (req, res) => {
 
 export const deleteEmployee = async (req, res) => {
     try {
-        const [result] = await pool.query('DELETE FROM employee WHERE id = ?', [req.params.id])
+        
+        const result = await deleteEmployeeById(req.params.id)
 
-        if (result.affectedRows <= 0) return res.status(404).json({
+        if ( !result ) return res.status(404).json({
             message: 'Employee not found'
+        });
+
+        console.log(result);
+        return res.status(200).json({
+            message: `Employee with id ${req.params.id} was succesfully deleted.`
         })
-        console.log(`Employee with id ${req.params.id} was succesfully deleted.`);
-        res.sendStatus(204)
     } catch (error) {
-        return res.status.json({
+        console.log(error);
+        return res.status(500).json({
             message: 'something goes wrong'
         });
     }
@@ -65,16 +73,16 @@ export const putEmployee = async (req, res) => {
     const { name, salary } = req.body
 
     try {
-        const [result] = await pool.query('UPDATE employee SET name = IFNULL(?, name), salary = IFNULL(?, salary) WHERE id = ?', [name, salary, id])
+        
+        const result = await updateEmployee( name, salary, id )
 
-        if (result.affectedRows === 0) return res.status(404).json({
+        if ( !result ) return res.status(404).json({
             message: 'employee not found'
         })
 
-        const [rows] = await pool.query('SELECT * FROM employee WHERE id = ?', [id])
-        res.json(rows)
+        res.json(result)
     } catch (error) {
-        return res.status.json({
+        return res.status(500).json({
             message: 'something goes wrong'
         });
     }

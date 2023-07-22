@@ -22,3 +22,25 @@ INSERT INTO employee VALUES
 
     -- Delete employee by id
     DELETE FROM employee WHERE id = ?
+
+    -- Update employee by id
+    UPDATE employee SET name = IFNULL(?, name), salary = IFNULL(?, salary) WHERE id = ?
+
+    -- Post employee
+    INSERT INTO employee (name, salary) VALUES (?, ?)
+
+
+CREATE TABLE usuarios (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(45) DEFAULT NULL,
+    lastName VARCHAR(45) DEFAULT NULL,
+    email VARCHAR(45) DEFAULT NULL,
+    password VARCHAR(12) DEFAULT NULL
+    PRIMARY KEY(id)
+);
+
+INSERT INTO usuarios VALUES
+    (1, 'Juan', 'Taoe', 'juan@email.com', '123'),
+    (2, 'Pepe', 'El toro', 'pepe@email.com', '123');
+    
+    

@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/employees', getEmployees);
 
-router.get('/employee/:id', getEmployeebyId);
+router.get('/employees/:id', getEmployeebyId);
 
 router.post('/employees', postEmployee);
 
