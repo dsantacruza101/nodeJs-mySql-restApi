@@ -42,7 +42,9 @@ export const login = async (req, res) => {
                 msj: 'user and password correct',
                 user: {
                     token,
-                    result: result.email
+                    email: result.email,
+                    name: result.name,
+                    id: result.id
                 }
             })
         } else {
